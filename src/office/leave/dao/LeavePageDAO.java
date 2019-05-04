@@ -527,74 +527,75 @@ public class LeavePageDAO extends BaseHibernateDAO  {
     	}
     	else if(type==11)//加班调休
     	{
-    		//JbspSummary
-    		JbspSummaryDAO jsdao = new JbspSummaryDAO();
-    		double lastrestdays=0.0;
-        	JbspSummary js = jsdao.findAllByYearAndNewNumber(String.valueOf(year),newnumber);
-        	JbspSummary jspre = jsdao.findAllByYearAndNewNumber(String.valueOf(year-1),newnumber);
-        	if(jspre==null)
-        	{
-        		lastrestdays=0.0;
-        	}
-        	else
-        	{
-        		lastrestdays = jspre.getDays()-jspre.getDidays();
-        	}
-    		if((lastrestdays)>=days)//如果去年的加班剩余调休天数还足够，则用去年的天数抵用
-    		{
-    			jspre.setDidays(jspre.getDidays()+days);
-    		}
-    		else//如果去年加班剩余调休天数不够抵用，分两部分抵用
-    		{
-    			double lastyeardays = lastrestdays;
-    			double thisyeardays = days - lastyeardays;//
-    			if(jspre!=null)
-    			{
-    				jspre.setDidays(jspre.getDays());
-    			}
-    			if(js==null)
-    			{
-    				jpddao.diKouJbdays(name, begindate, thisyeardays);
-    			}
-    			else if((js.getDidays()+thisyeardays)>js.getDays())//如果今年的已经被抵用完,在新生成的加班明细表中抵扣
-    			{
-    				double newdays = js.getDidays()+thisyeardays-js.getDays();//新加班调休
-    				js.setDidays(js.getDays());
-    				jpddao.diKouJbdays(name, begindate, newdays);
-    			}
-    			else//如果今年的未抵用完
-    			{
-    				js.setDidays(js.getDidays()+thisyeardays);
-    			}
-    			
-    		}
-    		//leavesummary
-    		if(lspre.getWorkrest()>=days)//leavesummary去年够减
-    		{
-    			lspre.setWorkrest(lspre.getWorkrest()-days);
-    		}
-    		else//去年不够减
-    		{
-    			if(ls.getWorkrest()>=(days-lspre.getWorkrest()))
-    			{
-    				ls.setWorkrest(ls.getWorkrest()-(days-lspre.getWorkrest()));
-    			}
-    			else
-    			{
-    				ls.setWorkrest(0.0);
-    			}
-    			lspre.setWorkrest(0.0);
-    		}
-    		ls.setWorkleave(ls.getWorkleave()+days);
-    		lms.setWorkleave(lms.getWorkleave()+days);
-    		if(js!=null)
-    		{
-    			jsdao.merge(js);
-    		}
-    		if(jspre!=null)
-    		{
-    			jsdao.merge(jspre);
-    		}
+//    		//JbspSummary
+//    		JbspSummaryDAO jsdao = new JbspSummaryDAO();
+//    		double lastrestdays=0.0;
+//        	JbspSummary js = jsdao.findAllByYearAndNewNumber(String.valueOf(year),newnumber);
+//        	JbspSummary jspre = jsdao.findAllByYearAndNewNumber(String.valueOf(year-1),newnumber);
+//        	if(jspre==null)
+//        	{
+//        		lastrestdays=0.0;
+//        	}
+//        	else
+//        	{
+//        		lastrestdays = jspre.getDays()-jspre.getDidays();
+//        	}
+//    		if((lastrestdays)>=days)//如果去年的加班剩余调休天数还足够，则用去年的天数抵用
+//    		{
+//    			jspre.setDidays(jspre.getDidays()+days);
+//    		}
+//    		else//如果去年加班剩余调休天数不够抵用，分两部分抵用
+//    		{
+//    			double lastyeardays = lastrestdays;
+//    			double thisyeardays = days - lastyeardays;//
+//    			if(jspre!=null)
+//    			{
+//    				jspre.setDidays(jspre.getDays());
+//    			}
+//    			if(js==null)
+//    			{
+//    				jpddao.diKouJbdays(name, begindate, thisyeardays);
+//    			}
+//    			else if((js.getDidays()+thisyeardays)>js.getDays())//如果今年的已经被抵用完,在新生成的加班明细表中抵扣
+//    			{
+//    				double newdays = js.getDidays()+thisyeardays-js.getDays();//新加班调休
+//    				js.setDidays(js.getDays());
+//    				jpddao.diKouJbdays(name, begindate, newdays);
+//    			}
+//    			else//如果今年的未抵用完
+//    			{
+//    				js.setDidays(js.getDidays()+thisyeardays);
+//    			}
+//    			
+//    		}
+//    		//leavesummary
+//    		if(lspre.getWorkrest()>=days)//leavesummary去年够减
+//    		{
+//    			lspre.setWorkrest(lspre.getWorkrest()-days);
+//    		}
+//    		else//去年不够减
+//    		{
+//    			if(ls.getWorkrest()>=(days-lspre.getWorkrest()))
+//    			{
+//    				ls.setWorkrest(ls.getWorkrest()-(days-lspre.getWorkrest()));
+//    			}
+//    			else
+//    			{
+//    				ls.setWorkrest(0.0);
+//    			}
+//    			lspre.setWorkrest(0.0);
+//    		}
+//    		ls.setWorkleave(ls.getWorkleave()+days);
+//    		lms.setWorkleave(lms.getWorkleave()+days);
+//    		if(js!=null)
+//    		{
+//    			jsdao.merge(js);
+//    		}
+//    		if(jspre!=null)
+//    		{
+//    			jsdao.merge(jspre);
+//    		}
+    		jpddao.diKouJbdays(name, begindate, days);
     	}
     	else if(type==12)//产检
     	{
